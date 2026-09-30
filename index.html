@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <!-- Kein Zoomen und Verschieben der Seite: Wischen und Zwei-Finger-Zoom gehören dem Spiel. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GeoRohstoffe">
+  <title>GeoRohstoffe</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #dcdcd6;
+      touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none;
+      -webkit-touch-callout: none; }
+    #spiel { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; display: block; }
+    #laden { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; font: 600 18px system-ui, sans-serif; color: #223; }
+    #balken { width: 60vw; height: 8px; background: #bbb; border-radius: 4px; margin-top: 14px; overflow: hidden; }
+    #fuellung { height: 100%; width: 0; background: #2a7a50; }
+  </style>
+</head>
+<body>
+  <canvas id="spiel" tabindex="-1"></canvas>
+  <div id="laden">Spiel wird geladen …<div id="balken"><div id="fuellung"></div></div></div>
+  <script src="Build/Web.loader.js"></script>
+  <script>
+    createUnityInstance(document.querySelector('#spiel'), {
+      dataUrl: 'Build/Web.data.unityweb',
+      frameworkUrl: 'Build/Web.framework.js.unityweb',
+      codeUrl: 'Build/Web.wasm.unityweb',
+      companyName: "GeoRohstoffe",
+      productName: "GeoRohstoffe",
+      productVersion: "0.1.0",
+      // Mehr als doppelte Auflösung sieht man kaum, kostet aber Akku.
+      devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+      matchWebGLToCanvasSize: true,
+      autoSyncPersistentDataPath: true,
+    }, function (fortschritt) {
+      document.querySelector('#fuellung').style.width = (100 * fortschritt) + '%';
+    }).then(function () {
+      document.querySelector('#laden').remove();
+    }).catch(function (meldung) {
+      document.querySelector('#laden').textContent = 'Fehler beim Laden: ' + meldung;
+    });
+  </script>
+</body>
+</html>
